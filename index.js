@@ -80,17 +80,25 @@ module.exports = {
 
         this.$emit('init', editor);
 
+        //editor.setOption("enableEmmet", true);
         // 去掉编辑器中竖线
         editor.setShowPrintMargin(false);
         editor.getSession().setMode(typeof lang === 'string' ? ('ace/mode/' + lang) : lang);
         editor.setTheme('ace/theme/' + theme);
+        editor.find(
+            'needle',
+            {RegExp: true}
+        )
         if (this.value)
             editor.setValue(this.value, 1);
         this.contentBackup = this.value;
 
-        // 自定义提示
+        // 插入以下代码块
+
+
         if (autoComplete) {
             var staticWordCompleter = {
+                identifierRegexps: [/[a-zA-Z_0-9]/, /[./.]/],
                 getCompletions: function(editor, session, pos, prefix, callback) {
                     var customList = _this.customKeywordList
                     callback(null, [...customList.map(function(word){
@@ -110,7 +118,6 @@ module.exports = {
                 }
             }
             editor.completers = [staticWordCompleter]
-
             editor.setOptions({
                 enableBasicAutocompletion: true,
                 enableSnippets: true,
@@ -128,4 +135,3 @@ module.exports = {
 
     }
 }
-
